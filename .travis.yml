@@ -24,6 +24,10 @@ android:
 jdk:
   - oraclejdk8
 
+before_install:
+  - openssl aes-256-cbc -K $encrypted_2eb1bd50e5de_key -iv $encrypted_2eb1bd50e5de_iv
+    -in super_secret.txt.enc -out super_secret.txt -d
+
 before_script:
    #######################################
    #
