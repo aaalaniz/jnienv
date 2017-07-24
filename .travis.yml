@@ -58,7 +58,7 @@ before_script:
    - rm -rf google-cloud-sdk-138.0.0-linux-x86_64.tar.gz
    - ./google-cloud-sdk/bin/gcloud config set --installation component_manager/disable_update_check true
    - export GCLOUD_SDK_HOME="$HOME/google-cloud-sdk"
-   - export PATH="$HOME/google-cloud-sdk/bin:PATH"
+   - export PATH="$HOME/google-cloud-sdk/bin:$PATH"
    - popd
 
    #######################################
