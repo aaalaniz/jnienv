@@ -93,7 +93,7 @@ cache:
     - $HOME/.android/build-cache
 
 script:
-    - ./gradlew clean -PtestCoverageEnabled=true library:jacocoTestReport
+  - ./gradlew clean -PtestCoverageEnabled=true library:jacocoTestReport
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
