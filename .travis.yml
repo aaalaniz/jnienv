@@ -93,8 +93,8 @@ cache:
     - $HOME/.android/build-cache
 
 script:
-   - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash echo "Not PR job"; fi
-   - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash echo "PR job"; fi
+  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash echo "Not PR job"; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash echo "PR job"; fi'
   - ./gradlew clean -PtestCoverageEnabled=true library:jacocoTestReport
 
 after_success:
