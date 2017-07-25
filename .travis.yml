@@ -27,6 +27,11 @@ jdk:
 before_install:
   - openssl aes-256-cbc -K $encrypted_2eb1bd50e5de_key -iv $encrypted_2eb1bd50e5de_iv
     -in super_secret.txt.enc -out super_secret.txt -d
+    FIREBASE_TEST_LAB_KEY_FILE
+  - export FIREBASE_TEST_LAB_KEY_FILE=$HOME/travis-service-account.json
+  - export FIREBASE_TEST_LAB_KEY_FILE_AVAILABLE=false
+  - openssl aes-256-cbc -K $encrypted_2eb1bd50e5de_key -iv $encrypted_2eb1bd50e5de_iv
+    -in video-app-service-gcloud-service-account.json.enc -out $FIREBASE_TEST_LAB_KEY_FILE -d
 
 before_script:
    #######################################
@@ -63,6 +68,7 @@ before_script:
    - ./google-cloud-sdk/bin/gcloud config set --installation component_manager/disable_update_check true
    - export GCLOUD_SDK_HOME="$HOME/google-cloud-sdk"
    - export PATH="$HOME/google-cloud-sdk/bin:$PATH"
+   - 'if [ "FIREBASE_TEST_LAB_KEY_FILE_AVAILABLE" != "false" ]; then gcloud auth activate-service-account travis@video-app-79418.iam.gserviceaccount.com --key-file=$FIREBASE_TEST_LAB_KEY_FILE; fi'
    - popd
 
    #######################################
