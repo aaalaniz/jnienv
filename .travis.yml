@@ -26,8 +26,10 @@ jdk:
 
 before_install:
   - export SUPER_SECRET_FILE_HOME=$HOME/super_secret.txt
+  - export SUPER_SECRET_FILE_AVAILABLE=false
   - openssl aes-256-cbc -K $encrypted_2eb1bd50e5de_key -iv $encrypted_2eb1bd50e5de_iv
-    -in super_secret.txt.enc -out $SUPER_SECRET_FILE_HOME -d || true
+    -in super_secret.txt.enc -out $SUPER_SECRET_FILE_HOME -d &&
+    export SUPER_SECRET_FILE_AVAILABLE=true || true
 
 before_script:
    #######################################
@@ -98,8 +100,8 @@ cache:
     - $HOME/.android/build-cache
 
 script:
-  - 'if [ ! -f "$SUPER_SECRET_FILE_HOME" ]; then echo "Super secret file not available"; fi'
-  - 'if [ -f "$SUPER_SECRET_FILE_HOME" ]; then echo "Secret file is available"; fi'
+  - 'if [ "$SUPER_SECRET_FILE_AVAILABLE" != "false" ]; then echo "Super secret file available"; fi'
+  - 'if [ "$SUPER_SECRET_FILE_AVAILABLE" = "false" ]; then echo "Super secret file not available"; fi'
   - ./gradlew clean -PtestCoverageEnabled=true library:jacocoTestReport
 
 after_success:
