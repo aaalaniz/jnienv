@@ -101,7 +101,7 @@ cache:
     - $HOME/.android/build-cache
 
 script:
-  - 'if [ "FIREBASE_TEST_LAB_KEY_FILE_AVAILABLE" != "false" ]; then gcloud beta test devices list; fi'
+  - 'if [ "FIREBASE_TEST_LAB_KEY_FILE_AVAILABLE" != "false" ]; then gcloud beta test android devices list; fi'
   - ./gradlew clean -PtestCoverageEnabled=true library:jacocoTestReport
 
 after_success:
