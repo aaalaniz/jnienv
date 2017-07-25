@@ -25,8 +25,9 @@ jdk:
   - oraclejdk8
 
 before_install:
+  - export SUPER_SECRET_FILE_HOME=$HOME/super_secret.txt
   - openssl aes-256-cbc -K $encrypted_2eb1bd50e5de_key -iv $encrypted_2eb1bd50e5de_iv
-    -in super_secret.txt.enc -out super_secret.txt -d || true
+    -in super_secret.txt.enc -out $SUPER_SECRET_FILE_HOME -d || true
 
 before_script:
    #######################################
@@ -97,8 +98,8 @@ cache:
     - $HOME/.android/build-cache
 
 script:
-  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then echo "Not PR job"; fi'
-  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then echo "PR job"; fi'
+  - 'if [ ! -f "$SUPER_SECRET_FILE_HOME" ]; then echo "Super secret file not available"; fi'
+  - 'if [ -f "$SUPER_SECRET_FILE_HOME" ]; then echo "Secret file is available"; fi'
   - ./gradlew clean -PtestCoverageEnabled=true library:jacocoTestReport
 
 after_success:
