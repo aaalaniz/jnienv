@@ -25,6 +25,11 @@ task clean(type: Delete) {
 def getCommitBranch() {
     return "git branch --contains ${System.getenv("TRAVIS_COMMIT")}".execute().text.trim()
 }
+git log 56a44a5..HEAD --ancestry-path --merges --oneline --color
+
+def getCommitBranch2() {
+    return "git log ${System.getenv("TRAVIS_COMMIT")}..HEAD --ancestry-path --merges --oneline --color".execute().text.trim()
+}
 
 task incrementRc {
     description = 'Increment the current release candidate version'
@@ -32,6 +37,7 @@ task incrementRc {
 
     doLast {
         def gitBranch = getCommitBranch()
+        def gitBranch2 = getCommitBranch2()
 //        def nextVersionRc = "${versionRc + 1}"
         // Create build directory if not created
 //        if (!buildDir.exists()) {
@@ -41,6 +47,11 @@ task incrementRc {
         exec {
             workingDir "${rootDir}"
             commandLine "echo", "${gitBranch}"
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "echo", "${gitBranch2}"
         }
 
 //        exec {
