@@ -22,14 +22,6 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-def getCommitBranch() {
-    return "git branch --contains ${System.getenv("TRAVIS_COMMIT")}".execute().text.trim()
-}
-
-def getCommitBranch2() {
-    return "git log ${System.getenv("TRAVIS_COMMIT")}..HEAD --ancestry-path --merges --oneline --color".execute().text.trim()
-}
-
 task incrementRc {
     description = 'Increment the current release candidate version'
     group = 'Git'
@@ -43,15 +35,15 @@ task incrementRc {
 //            buildDir.mkdir()
 //        }
 //        def tmpProjectPropertiesFile = new FileOutputStream("${buildDir}/gradle.properties")
-        exec {
-            workingDir "${rootDir}"
-            commandLine "echo", "${gitBranch}"
-        }
+//        exec {
+//            workingDir "${rootDir}"
+//            commandLine "echo", "${gitBranch}"
+//        }
 
-        exec {
-            workingDir "${rootDir}"
-            commandLine "echo", "${gitBranch2}"
-        }
+//        exec {
+//            workingDir "${rootDir}"
+//            commandLine "echo", "${gitBranch2}"
+//        }
 
 //        exec {
 //            workingDir "${rootDir}"
@@ -66,19 +58,19 @@ task incrementRc {
 //            standardOutput tmpProjectPropertiesFile
 //        }
 //
-//        exec {
-//            workingDir "${rootDir}"
-//            commandLine "mv", "${buildDir}/gradle.properties", "gradle.properties"
-//        }
-//
-//        exec {
-//            workingDir "${rootDir}"
-//            commandLine "git", "commit", "gradle.properties", "-m", "\"Bump RC version [skip ci]\""
-//        }
-//
-//        exec {
-//            workingDir "${rootDir}"
-//            commandLine "git", "push", "origin", "${gitBranch}"
-//        }
+        exec {
+            workingDir "${rootDir}"
+            commandLine "touch", "${System.getenv("TRAVIS_JOB_ID")}"
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "commit", "${System.getenv("TRAVIS_JOB_ID")}", "-m", "\"Bump RC version [skip ci]\""
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "push", "origin", "${System.getenv("TRAVIS_BRANCH")}:${gitBranch}"
+        }
     }
 }
