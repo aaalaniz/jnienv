@@ -25,7 +25,6 @@ task clean(type: Delete) {
 def getCommitBranch() {
     return "git branch --contains ${System.getenv("TRAVIS_COMMIT")}".execute().text.trim()
 }
-git log 56a44a5..HEAD --ancestry-path --merges --oneline --color
 
 def getCommitBranch2() {
     return "git log ${System.getenv("TRAVIS_COMMIT")}..HEAD --ancestry-path --merges --oneline --color".execute().text.trim()
