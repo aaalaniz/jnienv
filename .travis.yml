@@ -110,4 +110,4 @@ jobs:
     - stage: snapshot
       script: echo "snapshot"
     - stage: release candidate
-      script: echo "release candidate"
+      script: echo "TRAVIS_BRANCH=$TRAVIS_BRANCH"
