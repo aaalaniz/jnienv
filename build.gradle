@@ -30,8 +30,6 @@ task incrementRc {
     description = 'Increment the current release candidate version'
     group = 'Git'
 
-    dependsOn 'validateReleaseCandidateTag'
-
     doLast {
         def gitBranch = getCommitBranch()
 //        def nextVersionRc = "${versionRc + 1}"
