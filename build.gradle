@@ -27,8 +27,6 @@ task incrementRc {
     group = 'Git'
 
     doLast {
-        def gitBranch = getCommitBranch()
-        def gitBranch2 = getCommitBranch2()
 //        def nextVersionRc = "${versionRc + 1}"
         // Create build directory if not created
 //        if (!buildDir.exists()) {
