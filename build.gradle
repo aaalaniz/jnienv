@@ -21,3 +21,56 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+def getCommitBranch() {
+    return "git branch --contains ${System.getenv("TRAVIS_COMMIT")}".execute().text.trim()
+}
+
+task incrementRc {
+    description = 'Increment the current release candidate version'
+    group = 'Git'
+
+    dependsOn 'validateReleaseCandidateTag'
+
+    doLast {
+        def gitBranch = getCommitBranch()
+//        def nextVersionRc = "${versionRc + 1}"
+        // Create build directory if not created
+//        if (!buildDir.exists()) {
+//            buildDir.mkdir()
+//        }
+//        def tmpProjectPropertiesFile = new FileOutputStream("${buildDir}/gradle.properties")
+        exec {
+            workingDir "${rootDir}"
+            commandLine "echo", "${gitBranch}"
+        }
+
+//        exec {
+//            workingDir "${rootDir}"
+//            commandLine "echo", "Incrementing RC from ${versionRc} to ${nextVersionRc}"
+//        }
+//
+//        exec {
+//            workingDir "${rootDir}"
+//            commandLine "sed",
+//                    "s@versionRc=.*@versionRc=${nextVersionRc}@",
+//                    "gradle.properties"
+//            standardOutput tmpProjectPropertiesFile
+//        }
+//
+//        exec {
+//            workingDir "${rootDir}"
+//            commandLine "mv", "${buildDir}/gradle.properties", "gradle.properties"
+//        }
+//
+//        exec {
+//            workingDir "${rootDir}"
+//            commandLine "git", "commit", "gradle.properties", "-m", "\"Bump RC version [skip ci]\""
+//        }
+//
+//        exec {
+//            workingDir "${rootDir}"
+//            commandLine "git", "push", "origin", "${gitBranch}"
+//        }
+    }
+}
