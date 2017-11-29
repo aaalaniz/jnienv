@@ -46,11 +46,6 @@ before_script:
    #
    ######################################
 
-   # Add gradle properties
-   - touch $HOME/.gradle/gradle.properties
-   # Disable gradle daemon
-   - echo 'org.gradle.daemon=false' > $HOME/.gradle/gradle.properties
-
    #######################################
    #
    # Android SDK
