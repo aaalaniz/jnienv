@@ -30,7 +30,7 @@ stages:
   - name: snapshot
     if: type = push AND branch IN (master, 2.0)
   - name: release candidate
-    if: tag =~ ^\d+\.\d+\.\d+-rc\d+$ AND branch IN (master, 2.0)
+    if: tag =~ ^\d+\.\d+\.\d+-rc\d+$
 
 before_install:
   - export FIREBASE_TEST_LAB_KEY_FILE=$HOME/travis-service-account.json
