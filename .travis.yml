@@ -24,6 +24,14 @@ android:
 jdk:
   - oraclejdk8
 
+stages:
+  - name: test
+    if: type IN (push, pull_request)
+  - name: snapshot
+    if: type = push AND branch IN (master, 2.0)
+  - name: release candidate
+    if: tag =~ ^\d+\.\d+\.\d+-rc\d+$ AND branch IN (master, 2.0)
+
 before_install:
   - export FIREBASE_TEST_LAB_KEY_FILE=$HOME/travis-service-account.json
   - export FIREBASE_TEST_LAB_KEY_FILE_AVAILABLE=false
@@ -100,9 +108,11 @@ cache:
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
 
-script:
-  - 'if [ "FIREBASE_TEST_LAB_KEY_FILE_AVAILABLE" != "false" ]; then gcloud beta test android devices list; fi'
-  - ./gradlew clean -PtestCoverageEnabled=true library:jacocoTestReport
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+jobs:
+  include:
+    - stage: test
+      script: echo "test"
+    - stage: snapshot
+      script: echo "snapshot"
+    - stage: release candidate
+      script: echo "release candidate"
