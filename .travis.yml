@@ -26,7 +26,7 @@ jdk:
 
 stages:
   - name: test
-    if: type IN (push, pull_request)
+    if: type IN (push, pull_request) AND tag is blank
   - name: snapshot
     if: type = push AND branch IN (master, 2.0)
   - name: release candidate
@@ -51,37 +51,37 @@ before_script:
    # Android SDK
    #
    ######################################
-   - mkdir "$ANDROID_HOME/licenses" || true
-   - echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
+#   - mkdir "$ANDROID_HOME/licenses" || true
+#   - echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
    # Ensure all dependencies are installed before building
-   - ./gradlew dependencies || true
+#   - ./gradlew dependencies || true
 
    #######################################
    #
    # Google Cloud SDK
    #
    ######################################
-   - pushd ~
-   - wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-138.0.0-linux-x86_64.tar.gz
-   - tar xzf google-cloud-sdk-138.0.0-linux-x86_64.tar.gz
-   - ./google-cloud-sdk/install.sh --usage-reporting=true --path-update=false --bash-completion=false --additional-components alpha beta gcloud
-   - rm -rf google-cloud-sdk-138.0.0-linux-x86_64.tar.gz
-   - ./google-cloud-sdk/bin/gcloud config set --installation component_manager/disable_update_check true
-   - export GCLOUD_SDK_HOME="$HOME/google-cloud-sdk"
-   - export PATH="$HOME/google-cloud-sdk/bin:$PATH"
+#   - pushd ~
+#   - wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-138.0.0-linux-x86_64.tar.gz
+#   - tar xzf google-cloud-sdk-138.0.0-linux-x86_64.tar.gz
+#   - ./google-cloud-sdk/install.sh --usage-reporting=true --path-update=false --bash-completion=false --additional-components alpha beta gcloud
+#   - rm -rf google-cloud-sdk-138.0.0-linux-x86_64.tar.gz
+#   - ./google-cloud-sdk/bin/gcloud config set --installation component_manager/disable_update_check true
+#   - export GCLOUD_SDK_HOME="$HOME/google-cloud-sdk"
+#   - export PATH="$HOME/google-cloud-sdk/bin:$PATH"
    - 'if [ "FIREBASE_TEST_LAB_KEY_FILE_AVAILABLE" != "false" ]; then gcloud auth activate-service-account --key-file=$FIREBASE_TEST_LAB_KEY_FILE; fi'
-   - popd
+#   - popd
 
    #######################################
    #
    # Android NDK Setup
    #
    ######################################
-   - pushd ~
-   - wget -q https://dl.google.com/android/repository/android-ndk-r12b-linux-x86_64.zip
-   - unzip -qo android-ndk-r12b-linux-x86_64.zip
-   - export ANDROID_NDK_HOME="$HOME/android-ndk-r12b"
-   - popd
+#   - pushd ~
+#   - wget -q https://dl.google.com/android/repository/android-ndk-r12b-linux-x86_64.zip
+#   - unzip -qo android-ndk-r12b-linux-x86_64.zip
+#   - export ANDROID_NDK_HOME="$HOME/android-ndk-r12b"
+#   - popd
 
     #######################################
     #
@@ -89,10 +89,10 @@ before_script:
     #
     ######################################
    # Create and start an emulator for instrumentation tests.
-   - echo no | android create avd --force -n test -t android-18 --abi armeabi-v7a
-   - emulator -avd test -no-window &
-   - android-wait-for-emulator
-   - adb shell input keyevent 82
+#   - echo no | android create avd --force -n test -t android-18 --abi armeabi-v7a
+#   - emulator -avd test -no-window &
+#   - android-wait-for-emulator
+#   - adb shell input keyevent 82
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
