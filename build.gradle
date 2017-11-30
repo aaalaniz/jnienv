@@ -145,6 +145,8 @@ task incrementVersion {
         exec {
             workingDir "${rootDir}"
             commandLine "git", "remote", "add", "${remote}", "${gitRef}"
+            // Ignore exit value because remote may have been added in previous task
+            ignoreExitValue true
         }
 
         exec {
