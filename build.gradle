@@ -48,7 +48,7 @@ task incrementRc {
             commandLine "git",
                     "push",
                     "--quiet",
-                    "https://${GITHUB_TOKEN}@github.com:aaalaniz/jnienv.git",
+                    "https://${System.getenv("GITHUB_TOKEN")}@github.com:aaalaniz/jnienv.git",
                     "${System.getenv("TRAVIS_BRANCH")}:master"
             standardOutput devNullFile
         }
