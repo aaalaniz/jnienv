@@ -35,23 +35,18 @@ task incrementRc {
 
         exec {
             workingDir "${rootDir}"
-            commandLine "git", "fetch", "${gitRef}"
+            commandLine "git", "remote", "add", "upstream", "${gitRef}"
         }
 
         exec {
             workingDir "${rootDir}"
-            commandLine "git", "branch", "-a"
+            commandLine "git", "fetch", "upstream"
         }
 
         exec {
             workingDir "${rootDir}"
             commandLine "git", "checkout", "${gitBranch}"
         }
-
-//        exec {
-//            workingDir "${rootDir}"
-//            commandLine "git", "checkout", "-b", "${gitBranch}"
-//        }
 
         exec {
             workingDir "${rootDir}"
@@ -70,7 +65,7 @@ task incrementRc {
 
         exec {
             workingDir "${rootDir}"
-            commandLine "git", "push", "--quiet", "${gitRef}", "${gitBranch}"
+            commandLine "git", "push", "--quiet", "upstream", "${gitBranch}"
             standardOutput pushNullFile
         }
     }
