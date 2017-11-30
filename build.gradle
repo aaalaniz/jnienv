@@ -27,10 +27,24 @@ task incrementRc {
     group = 'Git'
 
     doLast {
-        def gitRef = "https://${System.getenv("GITHUB_TOKEN")}@github.com/aaalaniz/jnienv.git"
+        def gitBranch = "master"
+        def githubToken = System.getenv("GITHUB_TOKEN")
+        def repoSlug = System.getenv("TRAVIS_REPO_SLUG")
+        def repoName = repoSlug.split("/")[1]
+        def gitRef = "https://${githubToken}@github.com/${repoSlug}.git"
         def cloneNullFile = new FileOutputStream("/dev/null")
         def pushNullFile = new FileOutputStream("/dev/null")
-        def repoDir = "/tmp/jnienv"
+        def repoDir = "/tmp/${repoName}"
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "remote", "-v"
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "branch"
+        }
 
         exec {
             workingDir "${rootDir}"
@@ -40,7 +54,7 @@ task incrementRc {
 
         exec {
             workingDir "${repoDir}"
-            commandLine "git", "checkout", "master"
+            commandLine "git", "checkout", "${gitBranch}"
         }
 
         exec {
@@ -60,11 +74,7 @@ task incrementRc {
 
         exec {
             workingDir "${repoDir}"
-            commandLine "git",
-                    "push",
-                    "--quiet",
-                    "https://${System.getenv("GITHUB_TOKEN")}@github.com/aaalaniz/jnienv.git",
-                    "master"
+            commandLine "git", "push", "--quiet", "${gitRef}", "${gitBranch}"
             standardOutput pushNullFile
         }
     }
