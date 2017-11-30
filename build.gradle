@@ -30,50 +30,36 @@ task incrementRc {
         def gitBranch = "master"
         def githubToken = System.getenv("GITHUB_TOKEN")
         def repoSlug = System.getenv("TRAVIS_REPO_SLUG")
-        def repoName = repoSlug.split("/")[1]
         def gitRef = "https://${githubToken}@github.com/${repoSlug}.git"
-        def cloneNullFile = new FileOutputStream("/dev/null")
         def pushNullFile = new FileOutputStream("/dev/null")
-        def repoDir = "/tmp/${repoName}"
 
         exec {
             workingDir "${rootDir}"
-            commandLine "git", "remote", "-v"
-        }
-
-        exec {
-            workingDir "${rootDir}"
-            commandLine "git", "branch"
+            commandLine "git", "checkout", "origin/${gitBranch}"
         }
 
         exec {
             workingDir "${rootDir}"
-            commandLine "git", "clone", "--quiet", "${gitRef}", "${repoDir}"
-            standardOutput cloneNullFile
+            commandLine "git", "checkout", "-b", "${gitBranch}"
         }
 
         exec {
-            workingDir "${repoDir}"
-            commandLine "git", "checkout", "${gitBranch}"
-        }
-
-        exec {
-            workingDir "${repoDir}"
+            workingDir "${rootDir}"
             commandLine "touch", "${System.getenv("TRAVIS_JOB_ID")}.txt"
         }
 
         exec {
-            workingDir "${repoDir}"
+            workingDir "${rootDir}"
             commandLine "git", "add", "${System.getenv("TRAVIS_JOB_ID")}.txt"
         }
 
         exec {
-            workingDir "${repoDir}"
+            workingDir "${rootDir}"
             commandLine "git", "commit", "-m", "\"Bump RC version [skip ci]\""
         }
 
         exec {
-            workingDir "${repoDir}"
+            workingDir "${rootDir}"
             commandLine "git", "push", "--quiet", "${gitRef}", "${gitBranch}"
             standardOutput pushNullFile
         }
