@@ -30,7 +30,7 @@ task incrementRc {
         def gitRef = "https://${System.getenv("GITHUB_TOKEN")}@github.com/aaalaniz/jnienv.git"
         def cloneNullFile = new FileOutputStream("/dev/null")
         def pushNullFile = new FileOutputStream("/dev/null")
-        def repoDir = "/tmp/${System.getenv("TRAVIS_REPO_SLUG")}"
+        def repoDir = "/tmp/jnienv"
 
         exec {
             workingDir "${rootDir}"
@@ -39,32 +39,27 @@ task incrementRc {
         }
 
         exec {
-            workingDir "${rootDir}"
-            commandLine "cd", "${repoDir}"
-        }
-
-        exec {
-            workingDir "${rootDir}"
+            workingDir "${repoDir}"
             commandLine "git", "checkout", "master"
         }
 
         exec {
-            workingDir "${rootDir}"
+            workingDir "${repoDir}"
             commandLine "touch", "${System.getenv("TRAVIS_JOB_ID")}.txt"
         }
 
         exec {
-            workingDir "${rootDir}"
+            workingDir "${repoDir}"
             commandLine "git", "add", "${System.getenv("TRAVIS_JOB_ID")}.txt"
         }
 
         exec {
-            workingDir "${rootDir}"
+            workingDir "${repoDir}"
             commandLine "git", "commit", "-m", "\"Bump RC version [skip ci]\""
         }
 
         exec {
-            workingDir "${rootDir}"
+            workingDir "${repoDir}"
             commandLine "git",
                     "push",
                     "--quiet",
