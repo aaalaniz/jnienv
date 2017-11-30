@@ -17,6 +17,18 @@ android:
 jdk:
   - oraclejdk8
 
+branches:
+  only:
+    - master
+    # RC Tag Branches
+    - /^\d+\.\d+\.\d+-rc\d+$/
+    # Release Tag Branches
+    - /^\d+\.\d+\.\d+$/
+    # Preview Release Tag Branches
+    - /^\d+\.\d+\.\d+-preview\d+$/
+    # Beta Release Tag Branches
+    - /^\d+\.\d+\.\d+-beta\d+$/
+
 stages:
   - name: test
     if: type IN (push, pull_request) AND tag is blank
@@ -24,6 +36,8 @@ stages:
     if: type = push AND branch IN (master, 2.0)
   - name: release candidate
     if: tag =~ ^\d+\.\d+\.\d+-rc\d+$
+  - name: release
+    if: tag =~ ^\d+\.\d+\.\d+$ OR tag =~ ^\d+\.\d+\.\d+-preview\d+$ OR tag =~ ^\d+\.\d+\.\d+-beta\d+$
 
 before_install:
   - export FIREBASE_TEST_LAB_KEY_FILE=$HOME/travis-service-account.json
@@ -34,8 +48,8 @@ before_install:
 
 before_script:
    # git
-   - git config --global user.email "travis@travis-ci.org"
-   - git config --global user.name "Travis CI"
+   - git config --global user.email "twilio-sdk-build@twilio.com"
+   - git config --global user.name "twilio-sdk-build"
 
    # cmake
    - wget https://github.com/Commit451/android-cmake-installer/releases/download/1.1.0/install-cmake.sh
@@ -67,3 +81,5 @@ jobs:
       script: echo "snapshot"
     - stage: release candidate
       script: ./gradlew incrementRc
+    - stage: release
+      script: ./gradlew publishLibraryJavadocs incrementVersion

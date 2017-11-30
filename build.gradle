@@ -31,16 +31,17 @@ task incrementRc {
         def githubToken = System.getenv("GITHUB_TOKEN")
         def repoSlug = System.getenv("TRAVIS_REPO_SLUG")
         def gitRef = "https://${githubToken}@github.com/${repoSlug}.git"
+        def remote = "upstream"
         def pushNullFile = new FileOutputStream("/dev/null")
 
         exec {
             workingDir "${rootDir}"
-            commandLine "git", "remote", "add", "upstream", "${gitRef}"
+            commandLine "git", "remote", "add", "${remote}", "${gitRef}"
         }
 
         exec {
             workingDir "${rootDir}"
-            commandLine "git", "fetch", "upstream"
+            commandLine "git", "fetch", "${remote}"
         }
 
         exec {
@@ -65,7 +66,115 @@ task incrementRc {
 
         exec {
             workingDir "${rootDir}"
-            commandLine "git", "push", "--quiet", "upstream", "${gitBranch}"
+            commandLine "git", "push", "--quiet", "${remote}", "${gitBranch}"
+            standardOutput pushNullFile
+        }
+    }
+}
+
+task publishLibraryJavadocs {
+    description = 'Increment the current release candidate version'
+    group = 'Git'
+
+    doLast {
+        def gitBranch = "master"
+        def githubToken = System.getenv("GITHUB_TOKEN")
+        def repoSlug = System.getenv("TRAVIS_REPO_SLUG")
+        def gitRef = "https://${githubToken}@github.com/${repoSlug}.git"
+        def remote = "upstream"
+        def releaseVersion = System.getenv("TRAVIS_TAG") == null ?
+                ("") :
+                (System.getenv("TRAVIS_TAG"))
+        def pushNullFile = new FileOutputStream("/dev/null")
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "remote", "add", "${remote}", "${gitRef}"
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "fetch", "${remote}"
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "checkout", "${gitBranch}"
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "touch", "${System.getenv("TRAVIS_JOB_ID")}.txt"
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "add", "${System.getenv("TRAVIS_JOB_ID")}.txt"
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "commit", "-m", "\"Bump RC version [skip ci]\""
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "push", "--quiet", "${remote}", "${gitBranch}"
+            standardOutput pushNullFile
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "checkout", "${releaseVersion}"
+        }
+    }
+}
+
+task incrementVersion {
+    description = 'Increment the current release candidate version'
+    group = 'Git'
+
+    doLast {
+        def gitBranch = "master"
+        def githubToken = System.getenv("GITHUB_TOKEN")
+        def repoSlug = System.getenv("TRAVIS_REPO_SLUG")
+        def gitRef = "https://${githubToken}@github.com/${repoSlug}.git"
+        def remote = "upstream"
+        def pushNullFile = new FileOutputStream("/dev/null")
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "remote", "add", "${remote}", "${gitRef}"
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "fetch", "${remote}"
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "checkout", "${gitBranch}"
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "touch", "${System.getenv("TRAVIS_JOB_ID")}-version.txt"
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "add", "${System.getenv("TRAVIS_JOB_ID")}-version.txt"
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "commit", "-m", "\"Bump RC version [skip ci]\""
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "push", "--quiet", "${remote}", "${gitBranch}"
             standardOutput pushNullFile
         }
     }
