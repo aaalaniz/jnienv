@@ -33,6 +33,10 @@ before_install:
     export FIREBASE_TEST_LAB_KEY_FILE_AVAILABLE=true || true
 
 before_script:
+   # git
+   - git config --global user.email "travis@travis-ci.org"
+   - git config --global user.name "Travis CI"
+
    # cmake
    - wget https://github.com/Commit451/android-cmake-installer/releases/download/1.1.0/install-cmake.sh
    - chmod +x install-cmake.sh
