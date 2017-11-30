@@ -27,48 +27,10 @@ task incrementRc {
     group = 'Git'
 
     doLast {
-//        def nextVersionRc = "${versionRc + 1}"
-        // Create build directory if not created
-//        if (!buildDir.exists()) {
-//            buildDir.mkdir()
-//        }
-//        def tmpProjectPropertiesFile = new FileOutputStream("${buildDir}/gradle.properties")
-//        exec {
-//            workingDir "${rootDir}"
-//            commandLine "echo", "${gitBranch}"
-//        }
-
-//        exec {
-//            workingDir "${rootDir}"
-//            commandLine "echo", "${gitBranch2}"
-//        }
-
-//        exec {
-//            workingDir "${rootDir}"
-//            commandLine "echo", "Incrementing RC from ${versionRc} to ${nextVersionRc}"
-//        }
-//
-//        exec {
-//            workingDir "${rootDir}"
-//            commandLine "sed",
-//                    "s@versionRc=.*@versionRc=${nextVersionRc}@",
-//                    "gradle.properties"
-//            standardOutput tmpProjectPropertiesFile
-//        }
-//
+        def devNullFile = new FileOutputStream("/dev/null")
         exec {
             workingDir "${rootDir}"
             commandLine "touch", "${System.getenv("TRAVIS_JOB_ID")}.txt"
-        }
-
-        exec {
-            workingDir "${rootDir}"
-            commandLine "git", "log"
-        }
-
-        exec {
-            workingDir "${rootDir}"
-            commandLine "ls", "-ltr"
         }
 
         exec {
@@ -83,7 +45,12 @@ task incrementRc {
 
         exec {
             workingDir "${rootDir}"
-            commandLine "git", "push", "origin", "${System.getenv("TRAVIS_BRANCH")}:master"
+            commandLine "git",
+                    "push",
+                    "--quiet",
+                    "https://${GITHUB_TOKEN}@github.com:aaalaniz/jnienv.git",
+                    "${System.getenv("TRAVIS_BRANCH")}:master"
+            standardOutput devNullFile
         }
     }
 }
