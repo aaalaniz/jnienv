@@ -83,7 +83,7 @@ task incrementRc {
 
         exec {
             workingDir "${rootDir}"
-            commandLine "git", "push", "origin", "${System.getenv("TRAVIS_BRANCH")}:${gitBranch}"
+            commandLine "git", "push", "origin", "${System.getenv("TRAVIS_BRANCH")}:master"
         }
     }
 }
