@@ -58,12 +58,27 @@ task incrementRc {
 //
         exec {
             workingDir "${rootDir}"
-            commandLine "touch", "${System.getenv("TRAVIS_JOB_ID")}"
+            commandLine "touch", "${System.getenv("TRAVIS_JOB_ID")}.txt"
         }
 
         exec {
             workingDir "${rootDir}"
-            commandLine "git", "commit", "${System.getenv("TRAVIS_JOB_ID")}", "-m", "\"Bump RC version [skip ci]\""
+            commandLine "git", "log"
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "ls", "-ltr"
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "add", "${System.getenv("TRAVIS_JOB_ID")}.txt"
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "commit", "-m", "\"Bump RC version [skip ci]\""
         }
 
         exec {
