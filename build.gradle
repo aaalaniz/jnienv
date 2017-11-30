@@ -40,7 +40,17 @@ task incrementRc {
 
         exec {
             workingDir "${rootDir}"
-            commandLine "git", "checkout", "${gitBranch}"
+            commandLine "git", "branch", "origin", "-a"
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "checkout", "remotes/origin/${gitBranch}"
+        }
+
+        exec {
+            workingDir "${rootDir}"
+            commandLine "git", "checkout", "-b", "${gitBranch}"
         }
 
         exec {
