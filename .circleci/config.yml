@@ -1,11 +1,36 @@
+aliases:
+  - &restore-cache-ndk
+    keys:
+      - android-ndk-{{ arch }}-r12b-32-64
+  - &save-cache-ndk
+    paths:
+      - /opt/android-ndk
+    key: android-ndk-{{ arch }}-r12b-32-64
+
+  - &install-android-ndk
+    |
+      scripts/install-android-ndk.sh
+
+  - &create-ndk-directory
+    name: Create Android NDK Directory
+    command: |
+      if [[ ! -e /opt/android-ndk ]]; then
+        sudo mkdir /opt/android-ndk
+      fi
+      sudo chown ${USER:=$(/usr/bin/id -run)}:$USER /opt/android-ndk
+
 version: 2
 jobs:
   build:
-    working_directory: ~/code
+    working_directory: ~/jnienv
     docker:
       - image: circleci/android:api-25-alpha
+    resource_class: "large"
     environment:
       JVM_OPTS: -Xmx3200m
+      GRADLE_OPTS: '-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-XX:+HeapDumpOnOutOfMemoryError"'
+      ANDROID_NDK_HOME: '/opt/android-ndk/r12b'
+      BUILD_THREADS: 2
     steps:
       - checkout
       - run:
