@@ -1,8 +1,8 @@
 aliases:
-  - &restore-cache-ndk
+  - &restore-cache-android-ndk
     keys:
       - android-ndk-{{ arch }}-r12b-32-64
-  - &save-cache-ndk
+  - &save-cache-android-ndk
     paths:
       - /opt/android-ndk
     key: android-ndk-{{ arch }}-r12b-32-64
@@ -11,7 +11,7 @@ aliases:
     |
       scripts/install-android-ndk.sh
 
-  - &create-ndk-directory
+  - &create-android-ndk-directory
     name: Create Android NDK Directory
     command: |
       if [[ ! -e /opt/android-ndk ]]; then
@@ -35,10 +35,10 @@ jobs:
       - checkout
 
       # Install Android NDK
-      - run: *create-ndk-directory
-      - restore-cache: *restore-cache-ndk
-      - run: *install-ndk
-      - save-cache: *save-cache-ndk
+      - run: *create-android-ndk-directory
+      - restore-cache: *restore-cache-android-ndk
+      - run: *install-android-ndk
+      - save-cache: *save-cache-android-ndk
 
       # Build library
       - run:
