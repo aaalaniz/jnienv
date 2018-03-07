@@ -33,6 +33,14 @@ jobs:
       BUILD_THREADS: 2
     steps:
       - checkout
+
+      # Install Android NDK
+      - run: *create-ndk-directory
+      - restore-cache: *restore-cache-ndk
+      - run: *install-ndk
+      - save-cache: *save-cache-ndk
+
+      # Build library
       - run:
-          name: Hello Circle
-          command: echo "Hello Circle!"
+          name: Build library
+          command: ./gradlew library:assemble
