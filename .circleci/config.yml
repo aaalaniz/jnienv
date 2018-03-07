@@ -7,7 +7,7 @@ aliases:
     paths:
       - ~/.gradle/caches
       - ~/.gradle/wrapper
-    key: - jars-{{ checksum "build.gradle" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+    key: jars-{{ checksum "build.gradle" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
   - &restore-cache-android-ndk
     keys:
       - android-ndk-{{ arch }}-r12b-32-64
