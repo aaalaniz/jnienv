@@ -1,4 +1,13 @@
 aliases:
+  # Cache management
+  - &restore-cache-gradle
+    keys:
+      - jars-{{ checksum "build.gradle" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+  - &save-cache-gradle
+    paths:
+      - ~/.gradle/caches
+      - ~/.gradle/wrapper
+    key: - jars-{{ checksum "build.gradle" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
   - &restore-cache-android-ndk
     keys:
       - android-ndk-{{ arch }}-r12b-32-64
@@ -7,10 +16,7 @@ aliases:
       - /opt/android-ndk
     key: android-ndk-{{ arch }}-r12b-32-64
 
-  - &install-android-ndk
-    |
-      scripts/install-android-ndk.sh
-
+  # Android NDK
   - &create-android-ndk-directory
     name: Create Android NDK Directory
     command: |
@@ -18,6 +24,10 @@ aliases:
         sudo mkdir /opt/android-ndk
       fi
       sudo chown ${USER:=$(/usr/bin/id -run)}:$USER /opt/android-ndk
+
+  - &install-android-ndk
+    |
+      scripts/install-android-ndk.sh
 
 version: 2
 jobs:
@@ -37,8 +47,10 @@ jobs:
       # Install Android NDK
       - run: *create-android-ndk-directory
       - restore-cache: *restore-cache-android-ndk
+      - restore-cache: *restore-cache-gradle
       - run: *install-android-ndk
       - save-cache: *save-cache-android-ndk
+      - save-cache: *save-cache-gradle
 
       # Build library
       - run:
